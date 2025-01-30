@@ -62,6 +62,9 @@ def get_messages():
             json_body = json.loads(body)
             print(f"Message contents {json_body}")
 
+            if body.get("title") is None or body.get("desc") is None or body.get("prio") is None:
+                continue
+
             send_jira_message(json_body)
 
         except:
@@ -69,7 +72,6 @@ def get_messages():
         time.sleep(1)
 
 def send_jira_message(json_body):
-    # Issue data (replace with your own data)
     issue_data = {
         "project": {"key": PROJECT_ID},
         "summary": f"{json_body.get("title")}",
@@ -84,8 +86,10 @@ def send_jira_message(json_body):
         # Print the key of the created issue
         print("Issue created successfully!")
         print("Issue Key:", new_issue.key)
+        return "Issue created successfully!"
     except Exception as e:
         print("Failed to create issue:", str(e))
+        return "Failed to create issue:"
 
 if __name__ == '__main__':
     app = create_app()
