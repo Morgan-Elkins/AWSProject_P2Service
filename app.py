@@ -57,12 +57,11 @@ def get_messages():
             )
 
             body = message['Body']
-            body = body.replace("\'", "\"")
-            json_body = json.loads(body)
+            json_body = eval(body)
             print(f"Message contents {json_body}")
 
-            # if body.get("title") is None or body.get("desc") is None or body.get("prio") is None:
-            #     continue
+            if json_body.get("title") is None or json_body.get("desc") is None or json_body.get("prio") is None:
+                continue
 
             send_jira_message(json_body)
 
