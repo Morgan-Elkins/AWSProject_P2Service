@@ -24,7 +24,7 @@ def runner(app):
 
 def test_get_health(client):
     response = client.get("/health")
-    assert b"Healthy" in response.data
+    assert b'{"status":"Healthy"}\n' in response.data
 
 def test_sending_jira_message(client):
     data = {"title": "pytest", "desc": "pytest desc", "prio": 0}
