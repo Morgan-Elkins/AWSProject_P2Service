@@ -25,7 +25,7 @@ def client():
 
 
 def test_get_health(client):
-    response = client.get("/health")
+    response = app.test_client().get("/health")
     assert b'{"status":"Healthy"}\n' in response.data
 
 # @mock_aws()
