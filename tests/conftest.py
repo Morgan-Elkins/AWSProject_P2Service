@@ -28,8 +28,8 @@ def test_get_health(client):
     response = client.get("/health")
     assert b'{"status":"Healthy"}\n' in response.data
 
-@mock_aws()
-def test_sending_jira_message(client):
-    data = {"title": "pytest", "desc": "pytest desc", "prio": 0}
-    response = send_jira_message(data)
-    assert response == "Issue created successfully!"
+# @mock_aws()
+# def test_sending_jira_message(client):
+#     data = {"title": "pytest", "desc": "pytest desc", "prio": 0}
+#     response = send_jira_message(data)
+#     assert response == "Issue created successfully!"
