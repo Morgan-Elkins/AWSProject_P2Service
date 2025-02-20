@@ -21,15 +21,12 @@ sqs = boto3.client('sqs', region_name=AWS_REGION)
 
 jira = JIRA(server=HOST, basic_auth=(EMAIL, JIRA_KEY))
 
-def create_app():
-    app = Flask(__name__)
+app = Flask(__name__)
 
-    # http://localhost:5002/health
-    @app.route("/health", methods=["GET"])
-    def health():
-        return jsonify({"status":"Healthy"}), 200
-
-    return app
+# http://localhost:5002/health
+@app.route("/health", methods=["GET"])
+def health():
+    return jsonify({"status":"Healthy"}), 200
 
 def get_messages():
     while True:
@@ -89,12 +86,13 @@ def send_jira_message(json_body):
         print("Failed to create issue:", str(e))
         return "Failed to create issue:"
 
+def background_thread():
+    thread = threading.Thread(target=get_messages, daemon=True)
+    thread.start()
+    return thread
+
+bg_thread = background_thread()
+
 #Docker: docker run --env-file ./.env -p 8082:8082 --rm p2service-flask-app
 if __name__ == '__main__':
-    app = create_app()
-    threading.Thread(target=lambda: app.run( port=5002)).start()
-    threading.Thread(target=lambda: get_messages()).start()
-else:
-    print("Running not main")
-    app = create_app()
-    threading.Thread(target=lambda: get_messages()).start()
+    threading.Thread(target=lambda: app.run()).start()
