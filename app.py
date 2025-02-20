@@ -19,8 +19,6 @@ PROJECT_ID = os.getenv("PROJECT_ID")
 
 sqs = boto3.client('sqs', region_name=AWS_REGION)
 
-jira = JIRA(server=HOST, basic_auth=(EMAIL, JIRA_KEY))
-
 app = Flask(__name__)
 
 # http://localhost:5002/health
@@ -73,6 +71,8 @@ def send_jira_message(json_body):
         "description": f"{json_body.get('desc')}",
         "issuetype": {"name": "Task"},
     }
+
+    jira = JIRA(server=HOST, basic_auth=(EMAIL, JIRA_KEY))
 
     try:
         # Create the issue

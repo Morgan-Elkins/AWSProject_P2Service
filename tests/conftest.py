@@ -7,9 +7,10 @@ os.environ['AWS_REGION'] = 'eu-west-2'
 os.environ['AWS_Q2'] = 'testing'
 os.environ['AWS_ACCESS_KEY_ID'] = 'testing'
 os.environ['AWS_SECRET_ACCESS_KEY'] = 'testing'
-os.environ['JIRA_KEY'] = 'testing'
-os.environ['EMAIL'] = 'testing'
-os.environ['PROJECT_ID'] = 'testing'
+os.environ['JIRA_KEY'] = ''
+os.environ['EMAIL'] = ''
+os.environ['HOST'] = 'https://jira.atlassian.com'
+os.environ['PROJECT_ID'] = ''
 
 from app import send_jira_message, app
 
