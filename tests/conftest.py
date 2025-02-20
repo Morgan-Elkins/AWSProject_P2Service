@@ -1,13 +1,15 @@
 import os
-
 import boto3
 import pytest
 from moto import mock_aws
 
 os.environ['AWS_REGION'] = 'eu-west-2'
-os.environ['AWS_Q1'] = 'testing'
+os.environ['AWS_Q2'] = 'testing'
 os.environ['AWS_ACCESS_KEY_ID'] = 'testing'
 os.environ['AWS_SECRET_ACCESS_KEY'] = 'testing'
+os.environ['JIRA_KEY'] = 'testing'
+os.environ['EMAIL'] = 'testing'
+os.environ['PROJECT_ID'] = 'testing'
 
 from app import send_jira_message, app
 
