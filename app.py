@@ -39,7 +39,7 @@ def get_messages():
                     'All'
                 ],
                 VisibilityTimeout=0,
-                WaitTimeSeconds=0
+                WaitTimeSeconds=2
             )
 
             message = response['Messages'][0]
@@ -62,7 +62,6 @@ def get_messages():
 
         except:
             pass
-        time.sleep(1)
 
 def send_jira_message(json_body):
     issue_data = {
