@@ -4,6 +4,7 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
     
 jobs:
   Build-Post-Docker-Ecr:
@@ -26,7 +27,7 @@ jobs:
           env:
             ECR_REGISTRY: ${{ steps.login-pf-aws-ecr.outputs.registry }}
             ECR_REPOSITORY_URI: ${{secrets.AWS_ECR_URI}}
-            IMAGE_TAG: ${{ github.sha }}
+            IMAGE_TAG: ${{ github.event.repository.name }}
           run: |
             docker build -t $ECR_REPOSITORY_URI:$IMAGE_TAG .
             docker push $ECR_REPOSITORY_URI:$IMAGE_TAG
