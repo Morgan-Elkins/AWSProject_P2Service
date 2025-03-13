@@ -8,6 +8,8 @@ import boto3
 from flask import Flask, jsonify
 from jira import JIRA
 
+from botocore.exceptions import ClientError
+
 load_dotenv()
 
 AWS_REGION = os.getenv("AWS_REGION")
@@ -20,6 +22,41 @@ PROJECT_ID = os.getenv("PROJECT_ID")
 sqs = boto3.client('sqs', region_name=AWS_REGION)
 
 app = Flask(__name__)
+
+# Bedrock client
+
+bedrock_client = boto3.client(
+    service_name="bedrock-runtime",
+    region_name="eu-west-2"
+)
+
+model_id = "anthropic.claude-3-sonnet-20240229-v1:0"
+
+def getLLMmessage(userMessage):
+    # Start a conversation with the user message.
+    user_message = userMessage
+    conversation = [
+        {
+            "role": "user",
+            "content": [{"text": user_message}],
+        }
+    ]
+
+    try:
+        # Send the message to the model, using a basic inference configuration.
+        response = bedrock_client.converse(
+            modelId=model_id,
+            messages=conversation,
+            inferenceConfig={"maxTokens": 512, "temperature": 0.5, "topP": 0.9},
+        )
+
+        # Extract and print the response text.
+        response_text = response["output"]["message"]["content"][0]["text"]
+        return response_text
+    except (ClientError, Exception) as e:
+        print(f"ERROR: Can't invoke '{model_id}'. Reason: {e}")
+        return ""
+
 
 # http://localhost:5002/health
 @app.route("/health", methods=["GET"])
@@ -64,10 +101,11 @@ def get_messages():
             pass
 
 def send_jira_message(json_body):
+    get_llm_message = f"   \n\n **A suggested improvement is**: {getLLMmessage(str(json_body.get('desc')))}"
     issue_data = {
         "project": {"key": PROJECT_ID},
         "summary": f"{json_body.get('title')}",
-        "description": f"{json_body.get('desc')}",
+        "description": f"{json_body.get('desc')}   \n {get_llm_message}",
         "issuetype": {"name": "Task"},
     }
 
